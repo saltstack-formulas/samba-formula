@@ -1,0 +1,12 @@
+{% set samba = salt['grains.filter_by']({
+    'Debian': {
+        'server': 'samba',
+        'client': 'samba-client',
+        'service': 'smbd',
+    },
+    'RedHat': {
+        'server': 'samba',
+        'client': 'samba',
+        'service': 'smbd',
+    },
+}, merge=salt['pillar.get']('samba:lookup')) %}
