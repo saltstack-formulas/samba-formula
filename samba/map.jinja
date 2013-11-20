@@ -3,10 +3,14 @@
         'server': 'samba',
         'client': 'samba-client',
         'service': 'smbd',
+        'config': '/etc/samba/smb.conf',
+        'config_src': 'salt://samba/files/smb.conf',
     },
     'RedHat': {
         'server': 'samba',
         'client': 'samba',
         'service': 'smbd',
+        'config': '/etc/samba/smb.conf',
+        'config_src': 'salt://samba/files/smb.conf',
     },
 }, merge=salt['pillar.get']('samba:lookup')) %}
