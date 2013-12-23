@@ -1,6 +1,6 @@
 {% from "samba/map.jinja" import samba with context %}
 
-smbclient:
+samba_client:
   pkg:
     - installed
     - name: {{ samba.client }}
