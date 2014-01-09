@@ -13,4 +13,8 @@
         'config': '/etc/samba/smb.conf',
         'config_src': 'salt://samba/files/smb.conf',
     },
-}, merge=salt['pillar.get']('samba:lookup')) %}
+}, merge=salt['grains.filter_by']({
+    'Ubuntu': {
+        'service': 'smbd',
+    },
+}, grain='os', merge=salt['pillar.get']('samba:lookup'))) %}
