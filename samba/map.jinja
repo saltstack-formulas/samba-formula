@@ -2,7 +2,13 @@
     'Debian': {
         'server': 'samba',
         'client': 'samba-client',
-        'service': 'samba',
+        'service': salt['grains.filter_by']({
+	    'lenny': 'samba',
+	    'squeeze': 'samba',
+	    'wheezy': 'samba',
+	    'jessie': 'smbd',
+	    'default': 'smbd',
+	}, grain='oscodename'),
         'config': '/etc/samba/smb.conf',
         'config_src': 'salt://samba/files/smb.conf',
     },
