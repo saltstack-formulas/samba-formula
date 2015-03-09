@@ -1,3 +1,7 @@
+samba_config:
+  section_order: [global, homes, printers]
+  include_skeleton: no
+
 samba_sections:
   global:
     workgroup: MYGROUP
