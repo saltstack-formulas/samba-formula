@@ -3,8 +3,8 @@ include:
   - samba.client
 {% endif %}
 
-{% for user, passwd in pillar.get('samba_users', {}).items() %}
-smbpasswd-{{ user }}:
+{% for login,user in pillar.get('samba_users', {}).items() %}
+smbpasswd-{{ login }}:
   cmd.run:
-    - name: '(echo {{ passwd }}; echo {{ passwd }}) | smbpasswd -as {{ user }}'
+    - name: '(echo {{ user.password }}; echo {{ user.password }}) | smbpasswd -as {{ login }}'
 {% endfor %}

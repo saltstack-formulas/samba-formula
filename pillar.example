@@ -29,5 +29,7 @@ samba_sections:
     directory mask: 2770
 
 samba_users:
-   user1: user1sambapassword
-   user2: user2sambapassword
+   user1: 
+     password: user1sambapassword
+   user2:
+     password: user2sambapassword
