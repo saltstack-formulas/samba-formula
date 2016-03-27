@@ -30,6 +30,13 @@ Includes the ``samba`` state.
 
 Creates a ``smb.conf`` based on pillar data.
 
+``samba.users``
+----------------
+
+Includes the ``samba`` state.
+
+Creates samba users (via ``smbpasswd``)  based on pillar data.
+
 Configuration
 =============
 
