@@ -19,6 +19,13 @@
         'config': '/etc/samba/smb.conf',
         'config_src': 'salt://samba/files/smb.conf',
     },
+    'CentOS': {
+        'server': 'samba',
+        'client': 'samba',
+        'service': 'smb',
+        'config': '/etc/samba/smb.conf',
+        'config_src': 'salt://samba/files/smb.conf',
+    },
 }, merge=salt['grains.filter_by']({
     'Ubuntu': {
         'service': 'smbd',
