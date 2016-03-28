@@ -19,3 +19,17 @@ samba_sections:
     guest ok: no
     writeable: no
     printable: yes
+  sharename:
+    comment: "This is a shared directory"
+    browseable: yes
+    writeable: yes
+    valid users: @sharegroup
+    force group: sharegroup
+    create mask: 0660
+    directory mask: 2770
+
+samba_users:
+   user1: 
+     password: user1sambapassword
+   user2:
+     password: user2sambapassword
