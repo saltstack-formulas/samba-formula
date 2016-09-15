@@ -27,9 +27,19 @@ samba_sections:
     force group: sharegroup
     create mask: 0660
     directory mask: 2770
+  user1share:
+    comment: "user1 samba share"
+    path: /usr/somewhere/private
+    valid users: user1
+    create mode: 0660
+    directory mode: 0770
+    public: no
+    writable: yes
+    printable: no
+
 
 samba_users:
-   user1: 
-     password: user1sambapassword
-   user2:
-     password: user2sambapassword
+  user1: 
+    password: user1sambapassword
+  user2:
+    password: user2sambapassword
