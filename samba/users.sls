@@ -8,9 +8,7 @@ include:
   user.present:
     - fullname: {{ login }}
     - password: {{ user.password }}
-{% endfor %}
 
-{% for login,user in pillar.get('samba_users', {}).items() %}
 smbpasswd-{{ login }}:
   cmd.run:
     - name: '(echo {{ user.password }}; echo {{ user.password }}) | smbpasswd -as {{ login }}'
