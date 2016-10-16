@@ -26,6 +26,13 @@
         'config': '/etc/samba/smb.conf',
         'config_src': 'salt://samba/files/smb.conf',
     },
+    'FreeBSD': {
+        'server': 'samba44',
+        'client': 'samba44',
+        'service': 'samba_server',
+        'config': '/usr/local/etc/smb4.conf',
+        'config_src': 'salt://samba/files/smb.conf',
+    },
 }, merge=salt['grains.filter_by']({
     'Ubuntu': {
         'service': 'smbd',
