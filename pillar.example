@@ -27,7 +27,7 @@ samba_sections:
     comment: "This is a shared directory"
     browseable: yes
     writeable: yes
-    valid users: @sharegroup
+    valid users: '@sharegroup'
     force group: sharegroup
     create mask: '0660'
     directory mask: '2770'
