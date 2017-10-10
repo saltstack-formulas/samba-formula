@@ -1,0 +1,18 @@
+# -*- coding: utf-8 -*-
+# vim: ft=jinja
+
+# Default lookup dictionary
+samba:
+  server: samba
+  client: samba
+  service: smbd
+  config: /etc/samba/smb.conf
+  config_src: salt://samba/files/smb.conf
+
+  conf:
+    render:
+      section_order: ['global',]
+      include_skeleton: yes
+    sections:
+      global:
+
