@@ -23,6 +23,10 @@
      'Suse':{
           'service': 'smb',
           'client' : 'samba-client',
+          'preinstall': {
+               'cmd': 'zypper --non-interactive dup --no-allow-vendor-change',
+               'osreleases': [42],
+             },
      },
      'Arch': {
          'client': 'smbclient',

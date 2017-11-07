@@ -11,8 +11,13 @@ samba:
 
   conf:
     render:
-      section_order: ['global',]
+      section_order: ['global']
       include_skeleton: yes
     sections:
       global:
 
+  users:
+
+  preinstall:
+    cmd:
+    osreleases: []
