@@ -1,47 +1,55 @@
-{% set samba = salt['grains.filter_by']({
+# -* coding: utf-8 -*-
+# vim: ft=jinja
+# OS family parameters overriding defaults
+
+{## start with defaults from defaults.yaml ##}
+{% import_yaml "samba/defaults.yaml" as defaults %}
+
+{% set osmap = salt['grains.filter_by']({
     'Debian': {
-        'server': 'samba',
         'client': 'samba-client',
         'service': salt['grains.filter_by']({
 	    'lenny': 'samba',
 	    'squeeze': 'samba',
 	    'wheezy': 'samba',
-	    'jessie': 'smbd',
-	    'default': 'smbd',
-	}, grain='oscodename'),
-        'config': '/etc/samba/smb.conf',
-        'config_src': 'salt://samba/files/smb.conf',
+	}, grain='oscodename', default='lenny'),
+     },
+     'RedHat': {
+         'service': 'smb',
+     },
+     'CentOS': {
+         'service': 'smb',
+     },
+     'Suse':{
+          'service': 'smb',
+          'client' : 'samba-client',
+          'preinstall': {
+               'cmd': 'zypper --non-interactive dup --no-allow-vendor-change',
+               'osreleases': [42],
+             },
+     },
+     'Arch': {
+         'client': 'smbclient',
+     },
+     'FreeBSD': {
+         'server': 'samba44',
+         'client': 'samba44',
+         'service': 'samba_server',
+         'config': '/usr/local/etc/smb4.conf',
+     },
+     'MacOS': {
+   },
+ }, grain='os_family', merge=salt['grains.filter_by']({
+     'Ubuntu': {
+        'client': 'smbclient',
+        'service': salt['grains.filter_by']({
+            'xenial': 'smbd',
+            'trusty': 'samba',
+        }, grain='oscodename', default='xenial'),
     },
-    'RedHat': {
-        'server': 'samba',
-        'client': 'samba',
-        'service': 'smb',
-        'config': '/etc/samba/smb.conf',
-        'config_src': 'salt://samba/files/smb.conf',
-    },
-    'CentOS': {
-        'server': 'samba',
-        'client': 'samba',
-        'service': 'smb',
-        'config': '/etc/samba/smb.conf',
-        'config_src': 'salt://samba/files/smb.conf',
-    },
-    'Arch': {
-        'server': 'samba',
-        'client': 'samba',
-        'service': 'smbd',
-        'config': '/etc/samba/smb.conf',
-        'config_src': 'salt://samba/files/smb.conf',
-    },
-    'FreeBSD': {
-        'server': 'samba44',
-        'client': 'samba44',
-        'service': 'samba_server',
-        'config': '/usr/local/etc/smb4.conf',
-        'config_src': 'salt://samba/files/smb.conf',
-    },
-}, merge=salt['grains.filter_by']({
-    'Ubuntu': {
-        'service': 'smbd',
-    },
-}, grain='os', merge=salt['pillar.get']('samba:lookup'))) %}
+}, grain='os', merge=salt['pillar.get']('samba')), base='samba') %}
+
+# Merge osmap onto default settings before merging pillars
+{% do defaults.samba.update(osmap) %}
+{% set samba = salt['pillar.get']( 'samba', default=defaults.samba, merge=True) %}
+
