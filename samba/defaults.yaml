@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
 
+{% set default_realm=salt['pillar.get']('samba:winbind:krb5_default_realm', 'EXAMPLE.COM')%}
+{% set default_workgroup=salt['pillar.get']('samba:conf:sections:global:workgroup', 'EXAMPLE')%}
+
 # Default lookup dictionary
 samba:
   server: samba
@@ -8,16 +11,119 @@ samba:
   service: smbd
   config: /etc/samba/smb.conf
   config_src: salt://samba/files/smb.conf
+  root_group: root
 
   conf:
     render:
-      section_order: ['global']
+      #### Inherit these as smb.conf defaults.
+      section_order: ['global', 'homes', 'printers', 'sharename',]
       include_skeleton: yes
     sections:
       global:
+        workgroup: {{ default_workgroup }}
+        server string: "Samba Server"
+        log file: "/var/log/samba/%m.log"
+        max log size: 50
+        dns proxy: no
+        load printers: yes
+        printing: cups
+        printcap name: cups
+        security: user
+      global_winbind_ad:
+        #### this gets merged if custom 'samba.winbind.krb5.default_realm'
+        #### pillar is found, otherwise its ignored.
+        realm: {{ default_realm }}
+        security: ADS
+        client signing: yes
+        client use spnego: yes
+        encrypt passwords: yes
+        idmap backend: lwopen
+        #idmap uid: 50-9999999999
+        #idmap gid: 50-9999999999
+        #idmap config shortdomainname:range: 500-40000
+        #idmap config shortdomainname:schema_mode: rfc2307
+        #idmap config shortdomainname:backend: ad
+        #idmap config *:range: 16777216-33554431
+        #idmap config *:backend: tdb
+        #idmap domains: {{ default_realm }}
+        #idmap config {{ default_realm }}:backend: rid
+        #idmap config {{ default_realm }}:base_rid: 0
+        #idmap config {{ default_realm }}:range: 20000 - 49999
+        #idmap uid: 10000-20000
+        #idmap gid: 10000-20000
+        kerberos method: secrets and keytab
+        template shell: /bin/bash
+        template homedir: /home/%U
+        winbind enum users: yes
+        winbind enum groups: yes
+        #winbind enable local accounts: yes ## depreciated??
+        winbind use default domain: yes
+        winbind trusted domains only: no
+        winbind nss info: rfc2307
+        winbind refresh tickets: yes
+        winbind offline logon: yes
+        winbind cache time: 10
+        domain master: no
+        local master: no
+        preferred master: no
+        #vfs objects: acl_xattr
+        #map acl inherit: true
+      homes:
+        comment: "Home Directories"
+        browseable: no
+        read only: No
+        inherit acls: No
+        writeable: yes
+      printers:
+        comment: "All Printers"
+        path: /var/lib/samba/drivers
+        browseable: no
+        guest ok: yes
+        writeable: no
+        printable: yes
+        #printer admin: root, '@ntadmins', '@smbprintadm'
+      sharename:
+        comment: "This is a shared directory"
+        browseable: yes
+        writeable: yes
+        valid users: '@sharegroup'
+        force group: sharegroup
+        create mask: '0660'
+        directory mask: '2770'
 
   users:
 
   preinstall:
     cmd:
     osreleases: []
+
+  winbind:
+    krb5_default_realm: {{ default_realm }}
+    joindomain: net ads join {{ default_realm }} #-U user
+
+    pam_winbind:
+      config: /etc/security/pam_winbind.conf
+      config_src: salt://samba/files/pam_winbind.conf
+      global:
+        debug: no
+        debug_state: no
+        cached_login: no
+        krb5_auth: yes
+        krb5_ccache_type:
+        require_membership_of:
+        warn_pwd_expire: 14
+        silent: no
+        mkhomedir: yes
+
+    pam_common_session:
+      regex: ['^(?!#).*(?<!#|\w)(session.*req.*pam_unix.so.*$)', r'\1\n\1\tpam_mkhomedir.so skel=/etc/skel/ umask=0077\n',]
+
+    nsswitch:
+      regex:
+       {% raw %}
+        - ['passwd', '^(?!#).*(?<!#|\w)(passwd.*:.*(files|compat))(?!.*winbind)(.*$)(?<!winbind)', '\1 winbind \3',]
+        - ['shadow', '^(?!#).*(?<!#|\w)(shadow.*:.*(files|compat))(?!.*winbind)(.*$)(?<!winbind)', '\1 winbind \3',]
+        - ['group', '^(?!#|net).*(?<!#|\w)(group.*:.*(files|compat))(?!.*winbind)(.*$)(?<!winbind)', '\1 winbind \3',]
+        - ['hostsMdns', '^(?!#).*(?<!#|\w)(host.*:.*files\s)(mdns4?_minimal.*\]\s*)(dns.*$)', '\1 \3',]
+        - ['hostsWins', '^(?!#).*(?<!#|\w)(host.*:.*files\s)(?!.*wins)(.*$)(?<!wins)', '\1wins\2',]
+       {% endraw %}
