@@ -7,8 +7,6 @@
 # Default lookup dictionary
 samba:
   server: samba
-  client: samba
-  service: smbd
   config: /etc/samba/smb.conf
   config_src: salt://samba/files/smb.conf
   root_group: root
@@ -43,7 +41,7 @@ samba:
         #idmap config shortdomainname:range: 500-40000
         #idmap config shortdomainname:schema_mode: rfc2307
         #idmap config shortdomainname:backend: ad
-        #idmap config *:range: 16777216-33554431
+        idmap config *:range: 16777216-33554431
         #idmap config *:backend: tdb
         #idmap domains: {{ default_realm }}
         #idmap config {{ default_realm }}:backend: rid
@@ -61,7 +59,7 @@ samba:
         winbind trusted domains only: no
         winbind nss info: rfc2307
         winbind refresh tickets: yes
-        winbind offline logon: yes
+        winbind offline logon: no
         winbind cache time: 10
         domain master: no
         local master: no

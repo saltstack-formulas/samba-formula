@@ -2,10 +2,11 @@
 # vim: ft=jinja
 # OS family parameters overriding defaults
 
-{## start with defaults from defaults.yaml ##}
-{% import_yaml "samba/defaults.yaml" as defaults %}
-
-{% set osmap = salt['grains.filter_by']({
+{% set samba_osmap = salt['grains.filter_by']({
+    'default':{
+        'client': 'samba-client',
+        'service': 'smb',
+        },
     'Debian': {
         'client': 'samba-client',
         'service': salt['grains.filter_by']({
@@ -13,12 +14,6 @@
 	    'squeeze': 'samba',
 	    'wheezy': 'samba',
 	}, grain='oscodename', default='lenny'),
-     },
-     'RedHat': {
-         'service': 'smb',
-     },
-     'CentOS': {
-         'service': 'smb',
      },
      'Suse':{
           'service': 'smb',
@@ -29,6 +24,7 @@
              },
      },
      'Arch': {
+         'service': 'smbd',
          'client': 'smbclient',
      },
      'FreeBSD': {
@@ -45,11 +41,44 @@
         'service': salt['grains.filter_by']({
             'xenial': 'smbd',
             'trusty': 'samba',
-        }, grain='oscodename', default='xenial'),
-    },
-}, grain='os', merge=salt['pillar.get']('samba')), base='samba') %}
+         }, grain='oscodename', default='xenial'),
+      },
+    }, grain='os')
+)%}
 
-# Merge osmap onto default settings before merging pillars
-{% do defaults.samba.update(osmap) %}
+#Winbind
+{% set winbind_osmap = salt['grains.filter_by']({
+   'default':{
+      'server': 'samba-winbind',
+      'services': ['nmb', 'winbind',],
+      'utils': ['attr', 'samba-winbind-clients', 'samba-winbind-krb5-locator', 'cifs-utils', 'oddjob-mkhomedir',],
+      'libnss': 'samba-winbind-modules',
+      'pam_authconfig': '/usr/sbin/authconfig --update --enablewinbind --enablewins --enablewinbindauth'
+   },
+   'Debian': {
+      'server': 'winbind',
+      'services': ['nmbd', 'winbind',],
+      'utils': ['smbldap-tools', 'cifs-utils',],
+      'libnss': 'libnss-winbind',
+      'pam_common': {
+         'session_config': '/etc/pam.d/common-session',
+         'auth_config': '/etc/pam.d/common-auth',
+         'auth_text': ['auth  sufficient  pam_krb5.so ccache=/tmp/krb5cc_%u',
+                       'auth  sufficient  pam_unix.so likeauth nullok use_first_pass',
+                       'auth  required    pam_deny.so'],
+        },
+   },
+   'Suse':{
+      'server': 'samba-winbind',
+      'services': ['nmbd', 'winbind',],
+      'utils': ['gvfs-backend-samba', 'attr', 'smbldap-tools', 'cifs-utils',],
+     },
+  }, grain='os_family')
+%}
+
+{# start with defaults, merge osmappings, and finally pillars #}
+{% import_yaml "samba/defaults.yaml" as defaults %}
+{% do defaults.samba.update( samba_osmap ) %}
+{% do defaults.samba.winbind.update( winbind_osmap ) %}
 {% set samba = salt['pillar.get']( 'samba', default=defaults.samba, merge=True) %}
 
