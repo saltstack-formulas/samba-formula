@@ -11,5 +11,5 @@ include:
 
 smbpasswd-{{ login }}:
   cmd.run:
-    - name: '(echo {{ user.password }}; echo {{ user.password }}) | smbpasswd -as {{ login }}'
+    - name: "(echo '{{ user.password }}'; echo '{{ user.password }}') | smbpasswd -as {{ login }}"
 {% endfor %}
