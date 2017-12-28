@@ -1,9 +1,9 @@
-{% if grains['os_family']=='RedHat' %}
+{% if grains['os_family'] in ('RedHat', 'Suse', 'Debian') %}
 include:
   - samba.client
 {% endif %}
 
-{% for login,user in pillar.get('samba_users', {}).items() %}
+{% for login,user in salt['pillar.get']('samba:users', {}).items() %}
 {{ login }}:
   user.present:
     - fullname: {{ login }}
@@ -11,5 +11,5 @@ include:
 
 smbpasswd-{{ login }}:
   cmd.run:
-    - name: '(echo {{ user.password }}; echo {{ user.password }}) | smbpasswd -as {{ login }}'
+    - name: "(echo '{{ user.password }}'; echo '{{ user.password }}') | smbpasswd -as {{ login }}"
 {% endfor %}
