@@ -28,7 +28,7 @@ Installs the samba client package.
 
 Includes the ``samba`` state.
 
-Creates a ``smb.conf`` based on pillar data.
+Creates a ``smb.conf`` based on defaults. Pillars if defined override default values.
 
 ``samba.users``
 ----------------
@@ -37,10 +37,20 @@ Includes the ``samba`` state.
 
 Creates samba users (via ``smbpasswd``)  based on pillar data.
 
+``samba.winbind``
+----------------
+
+Includes the ``samba`` state.
+
+Installs samba-winbind packages and updates NSS (nsswitch.conf).
+
+``samba.winbind-ad``
+----------------
+
+Includes the ``winbind`` state.
+
+By default this state provides full Active Directory domain membership when ``samba.role`` pillar equals ``ROLE_DOMAIN_MEMBER``.
+
 Configuration
 =============
-
-Installing the samba package will include a default ``smb.conf``. If you wish to override that config file, use the ``samba.config`` state, which creates a new ``smb.conf`` file based on pillar data.
-
-The pillar data in ``pillar.example`` results in the creation of a ``smb.conf`` similar to the packaged ``smb.conf``.
-
+The distro supplied samba package includes a default ``smb.conf`` which is overridden by ``samba.config`` state. This formula has good defaults for samba ROLE_STANDALONE and ROLE_DOMAIN_MEMBER roles, but can be extended/overridden in pillars.

@@ -1,38 +1,22 @@
 
+## Definitions to extend and override defaults
+
 samba:
+  role: ROLE_DOMAIN_MEMBER
   conf:
     render:
+      ## List the sections your smb.conf should include
       section_order: ['global', 'homes', 'printers', 'sharename', 'user1share']
+
     sections:
       global:
-        workgroup: MYGROUP
-        server string: "Samba Server"
-        printcap name: /etc/printcap
-        load printers: yes
-        log file: "/var/log/samba/%m.log"
-        max log size: 50
-        security: user
-        dns proxy: no
-      homes:
-        comment: "Home Directories"
-        browseable: no
-        writeable: yes
-      printers:
-        comment: "All Printers"
-        path: /var/spool/samba
-        browseable: no
-        guest ok: no
-        writeable: no
-        printable: yes
-      sharename:
-        comment: "This is a shared directory"
-        browseable: yes
-        writeable: yes
-        valid users: '@sharegroup'
-        force group: sharegroup
-        create mask: '0660'
-        directory mask: '2770'
+        workgroup: EXAMPLE
+        netbios name = example
+        bind interfaces only = yes
+        interfaces = lo bond0
+
       user1share:
+        ## Optional site specific extension to smb.conf
         comment: "user1 samba share"
         path: /home/user1
         valid users: user1
@@ -41,9 +25,13 @@ samba:
         public: no
         writable: yes
         printable: no
+
   users:
+    ## Optional site specific extension to smb.conf
     user1:
       password: user1sambapassword
     user2:
       password: user2sambapassword
 
+  winbind:
+    krb5_default_realm: EXAMPLE.COM

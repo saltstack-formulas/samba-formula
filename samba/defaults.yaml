@@ -1,23 +1,117 @@
 # -*- coding: utf-8 -*-
 # vim: ft=jinja
 
+{% set default_realm=salt['pillar.get']('samba:winbind:krb5_default_realm', 'EXAMPLE.COM')%}
+{% set default_workgroup=salt['pillar.get']('samba:conf:sections:global:workgroup', 'EXAMPLE')%}
+
 # Default lookup dictionary
 samba:
+  role: ROLE_STANDALONE
   server: samba
-  client: samba
-  service: smbd
   config: /etc/samba/smb.conf
   config_src: salt://samba/files/smb.conf
+  root_group: root
 
   conf:
     render:
-      section_order: ['global']
+      #### Inherit these as smb.conf defaults.
+      section_order: ['global', 'homes', 'printers', 'sharename',]
       include_skeleton: yes
     sections:
       global:
+        ## samba.role: ROLE_STANDALONE (default)
+        workgroup: {{ default_workgroup }}
+        server string: "Samba Server %v"
+        log file: "/var/log/samba/%m.log"
+        max log size: 50
+        dns proxy: no
+        load printers: yes
+        printing: cups
+        printcap name: cups
+        security: user
+        hosts allow: 127. 10. 192.168.
+        bind interfaces only: no
+        usershare allow guests: no
+      global_role_domain_member:
+        ## samba.role: ROLE_DOMAIN_MEMBER
+        realm: {{ default_realm }}
+        security: ADS
+        allow trusted domains: no
+        client signing: yes
+        client use spnego: yes
+        encrypt passwords: yes
+        idmap config *:range: 16777216-33554431
+        kerberos method: secrets and keytab
+        template shell: /bin/bash
+        template homedir: /home/%U
+        os level: 2
+        winbind enum users: yes
+        winbind enum groups: yes
+        winbind use default domain: yes
+        winbind trusted domains only: no
+        winbind refresh tickets: yes
+        winbind offline logon: no
+        winbind cache time: 10
+        winbind nested groups: True
+        wins support: True
+        socket options: SO_KEEPALIVE IPTOS_LOWDELAY TCP_NODELAY
+        domain master: no
+        local master: no
+        preferred master: no
+        username map: /etc/samba/aduser.map
+      homes:
+        comment: "Home Directories"
+        browseable: no
+        read only: No
+        inherit acls: No
+        writeable: yes
+      printers:
+        comment: "All Printers"
+        path: /var/lib/samba/drivers
+        browseable: no
+        guest ok: yes
+        writeable: no
+        printable: yes
+        #printer admin: root, '@ntadmins', '@smbprintadm'
+      files:
+        path: /tmp/example
+        comment: "This is a shared directory"
+        browseable: yes
+        writeable: yes
+        create mask: '0660'
+        directory mask: '2770'
 
   users:
 
   preinstall:
     cmd:
     osreleases: []
+
+  winbind:
+    krb5_default_realm: {{ default_realm }}
+    pam_mkhomedir_src: salt://samba/files/mkhomedir
+    usermap: /etc/samba/aduser.map
+    usermap_src: salt://samba/files/aduser.map
+
+    pam_winbind:
+      config: /etc/security/pam_winbind.conf
+      config_src: salt://samba/files/pam_winbind.conf
+      global:
+        debug: no
+        debug_state: no
+        cached_login: no
+        krb5_auth: yes
+        krb5_ccache_type: FILE
+        require_membership_of:
+        warn_pwd_expire: 14
+        silent: no
+        mkhomedir: yes
+
+    nsswitch:
+      regex:
+       {% raw %}
+        - ['hostsMdns', '^(?!#).*(?<!#|\w)(host.*:.*files\s)(mdns4?_minimal.*\]\s*)(dns.*$)', '\1 \3',]
+        - ['passwd', '^(?!#).*(?<!#|\w)(passwd.*:.*(files|compat))(?!.*winbind)(.*$)(?<!winbind)', '\1 winbind \3',]
+        - ['group', '^(?!#|net).*(?<!#|\w)(group.*:.*(files|compat))(?!.*winbind)(.*$)(?<!winbind)', '\1 winbind \3',]
+        - ['hostsWins', '^(?!#).*(?<!#|\w)(host.*:.*files\s)(?!.*wins)(.*$)(?<!wins)', '\1wins \2',]
+       {% endraw %}
