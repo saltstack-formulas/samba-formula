@@ -26,6 +26,10 @@ samba_winbind_pamforget_{{ pam_config }}:
       - cmd: samba_winbind_ad_authconfig
 
     {% endfor %}
+{% endif %}
+
+  {% if grains.os_family in ('Debian', 'Suse',) %}
+
     {% for config in samba.winbind.nsswitch.regex %}
 
 samba_winbind_nsswitch_{{ config[0] }}:
@@ -42,7 +46,7 @@ samba_winbind_nsswitch_{{ config[0] }}:
     {% endfor %}
   {% endif %}
 
-  {% if grains.os_family in ('RedHat', 'Debian') %}
+  {% if grains.os_family in ('RedHat', 'Debian', 'Suse',) %}
 
 samba_winbind_ad_authconfig:
   cmd.run:

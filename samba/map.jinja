@@ -73,6 +73,8 @@
       'libnss': '',
       'services': ['nmb', 'winbind',],
       'utils': ['gvfs-backend-samba', 'attr', 'cifs-utils',],
+      'pam_authconfig': '/usr/sbin/pam-config -a --winbind --mkhomedir --mkhomedir-umask=0077 --mkhomedir-skel=/etc/skel',
+      'pam_authconfig_cmd': '/usr/sbin/pam-config',
    },
  }, grain='os_family', merge=salt['grains.filter_by']({
     'Fedora': {
