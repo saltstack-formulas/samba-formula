@@ -49,7 +49,21 @@ Installs samba-winbind packages and updates NSS (nsswitch.conf).
 
 Includes the ``winbind`` state.
 
-By default this state provides full Active Directory domain membership when ``samba.role`` pillar equals ``ROLE_DOMAIN_MEMBER``.
+By default this state provides full Active Directory (AD) domain membership if ``samba.role`` equals ``ROLE_DOMAIN_MEMBER``.
+
+Your Domain Admin can join the domain in three commands-
+
+.. code-block:: bash
+
+     $ sudo net ads join EXAMPLE.COM -U 'domainAdminUser'
+     Enter domainAdminUser password:
+     Using short domain name -- EXAMPLE
+     Joined MYHOST to dns domain ‘example.com'
+
+     $ sudo kinit -k MYHOST\$@EXAMPLE.COM
+
+     $ sudo systemctl restart winbind
+
 
 Configuration
 =============
