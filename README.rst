@@ -51,7 +51,35 @@ Includes the ``winbind`` state.
 
 By default this state provides full Active Directory (AD) domain membership if ``samba.role`` equals ``ROLE_DOMAIN_MEMBER``.
 
-Your Domain Admin can join the domain in three commands-
+Configuration
+=============
+The distro supplied samba package includes a default ``smb.conf`` which is overridden by ``samba.config`` state. This formula has good defaults for samba ROLE_STANDALONE and ROLE_DOMAIN_MEMBER roles, but can be extended/overridden in pillars.
+
+
+AD integration
+==================
+
+Ensure host's assigned (dhcp) ipaddress is reflecting DNS.
+
+.. code-block:: bash
+
+     [myhost]$ ip addr
+     [myhost]$ host myhost.example.com
+
+Ensure system time is NTP synchronized (yes)!!
+
+.. code-block:: bash
+
+     $ # timedatectl
+               Local time: Fri 2018-02-09 08:34:10 MST
+           Universal time: Fri 2018-02-09 15:34:10 UTC
+                 RTC time: Fri 2018-02-09 15:34:21
+                Time zone: America/Denver (MST, -0700)
+          Network time on: yes
+         NTP synchronized: yes
+          RTC in local TZ: no
+
+Join the domain in three commands-
 
 .. code-block:: bash
 
@@ -64,7 +92,5 @@ Your Domain Admin can join the domain in three commands-
 
      $ sudo systemctl restart winbind
 
+If 'kinit' fails then try rebooting and checking for issues with time and dns.
 
-Configuration
-=============
-The distro supplied samba package includes a default ``smb.conf`` which is overridden by ``samba.config`` state. This formula has good defaults for samba ROLE_STANDALONE and ROLE_DOMAIN_MEMBER roles, but can be extended/overridden in pillars.
