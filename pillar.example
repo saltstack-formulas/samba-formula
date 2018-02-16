@@ -7,6 +7,7 @@ samba:
     render:
       ## List the sections your smb.conf should include
       section_order: ['global', 'homes', 'printers', 'sharename', 'user1share']
+      include_unordered_sections: yes
 
     sections:
       global:

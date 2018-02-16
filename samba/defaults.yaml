@@ -17,6 +17,7 @@ samba:
       #### Inherit these as smb.conf defaults.
       section_order: ['global', 'homes', 'printers', 'sharename',]
       include_skeleton: yes
+      include_unordered_sections: yes
     sections:
       global:
         ## samba.role: ROLE_STANDALONE (default)
