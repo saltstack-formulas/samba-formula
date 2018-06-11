@@ -17,6 +17,7 @@ samba:
       #### Inherit these as smb.conf defaults.
       section_order: ['global', 'homes', 'printers', 'sharename',]
       include_skeleton: yes
+      include_unordered_sections: yes
     sections:
       global:
         ## samba.role: ROLE_STANDALONE (default)
@@ -73,13 +74,6 @@ samba:
         writeable: no
         printable: yes
         #printer admin: root, '@ntadmins', '@smbprintadm'
-      files:
-        path: /tmp/example
-        comment: "This is a shared directory"
-        browseable: yes
-        writeable: yes
-        create mask: '0660'
-        directory mask: '2770'
 
   users:
 
