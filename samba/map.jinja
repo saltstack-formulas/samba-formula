@@ -6,24 +6,25 @@
     'default':{
         'client': 'samba-client',
         'service': 'smb',
-        },
+    },
     'Debian': {
         'client': 'samba-client',
         'service': salt['grains.filter_by']({
-	    'lenny': 'samba',
-	    'squeeze': 'samba',
-	    'wheezy': 'samba',
+            'lenny': 'samba',
+            'squeeze': 'samba',
+            'wheezy': 'samba',
             'jessie': 'smbd',
             'stretch': 'smbd',
-	}, grain='oscodename', default='lenny'),
-     },
-     'Suse':{
-          'service': 'smb',
-          'client' : 'samba-client',
-          'preinstall': {
-               'cmd': 'zypper --non-interactive dup --no-allow-vendor-change',
-               'osreleases': [42],
-             },
+            'buster': 'smbd'
+        }, grain='oscodename', default='lenny'),
+    },
+    'Suse':{
+        'service': 'smb',
+        'client' : 'samba-client',
+        'preinstall': {
+            'cmd': 'zypper --non-interactive dup --no-allow-vendor-change',
+            'osreleases': [42],
+        },
      },
      'Arch': {
          'service': 'smbd',
@@ -35,8 +36,7 @@
          'service': 'samba_server',
          'config': '/usr/local/etc/smb4.conf',
      },
-     'MacOS': {
-   },
+     'MacOS': {},
  }, grain='os_family', merge=salt['grains.filter_by']({
      'Ubuntu': {
         'client': 'smbclient',
