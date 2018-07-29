@@ -44,7 +44,7 @@ samba:
         # idmap config for this domain
         idmap config *:range: 16777216-33554431
         #idmap config *:backend = ad
-        idmap config *:schema_mode = rfc2307
+        #idmap config *:schema_mode = rfc2307
         kerberos method: secrets and keytab
         template shell: /bin/bash
         template homedir: /home/%U
