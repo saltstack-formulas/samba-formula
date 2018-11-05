@@ -54,7 +54,7 @@ samba:
         winbind expand groups: 0
         winbind use default domain: yes
         winbind trusted domains only: no
-        winbind refresh tickets: yes
+        winbind refresh tickets: no
         winbind offline logon: no
         winbind cache time: 10
         winbind nested groups: True
