@@ -12,9 +12,9 @@ samba:
     sections:
       global:
         workgroup: EXAMPLE
-        netbios name = example
-        bind interfaces only = yes
-        interfaces = lo bond0
+        netbios name: example
+        bind interfaces only: yes
+        interfaces: lo bond0
 
       user1share:
         ## Optional site specific extension to smb.conf
