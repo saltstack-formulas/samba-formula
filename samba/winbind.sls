@@ -18,7 +18,7 @@ samba_winbind_services:
       - {{ pkg }}
       {% endfor %}
     - require_in:
-      - file: samba_winbind_software
+      - file: samba_winbind_services
   file.managed:
     - name: {{ samba.winbind.pam_winbind.config }}
     - source: {{ samba.winbind.pam_winbind.config_src }}
@@ -27,7 +27,7 @@ samba_winbind_services:
     - group: {{ samba.get('root_group', 'root') }}
     - mode: '0644'
     - require_in:
-      - service: samba_winbind_software
+      - service: samba_winbind_services
   service.running:
     - unmask_runtime: true
     - names:
