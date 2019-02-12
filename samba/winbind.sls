@@ -2,6 +2,13 @@
 
 samba_winbind_software:
   pkg.installed:
+    - name: {{ samba.winbind.server }}
+    - refresh: True
+    - require_in:
+      - pkg: samba_winbind_services
+
+samba_winbind_services:
+  pkg.installed:
     - names:
       - {{ samba.winbind.server }}
       {% if samba.winbind.libnss %}
@@ -18,23 +25,14 @@ samba_winbind_software:
     - template: jinja
     - user: root
     - group: {{ samba.get('root_group', 'root') }}
-    - mode: 0644
+    - mode: '0644'
     - require_in:
       - service: samba_winbind_software
-  service.enabled:
-    - names:
-      {% for service in samba.winbind.services %}
-      -  {{ service }}
-      {% endfor %}
-    - require_in:
-      - samba_winbind_services
-
-samba_winbind_services:
   service.running:
     - unmask_runtime: true
     - names:
-      - {{ samba.service }}
       {% for service in samba.winbind.services %}
       -  {{ service }}
       {% endfor %}
-
+      - {{ samba.service }}
+    - enable: True
