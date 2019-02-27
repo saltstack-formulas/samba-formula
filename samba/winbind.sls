@@ -1,12 +1,5 @@
 {% from "samba/map.jinja" import samba with context %}
 
-samba_winbind_software:
-  pkg.installed:
-    - name: {{ samba.winbind.server }}
-    - refresh: True
-    - require_in:
-      - pkg: samba_winbind_services
-
 samba_winbind_services:
   pkg.installed:
     - names:
@@ -29,6 +22,7 @@ samba_winbind_services:
     - require_in:
       - service: samba_winbind_services
   service.running:
+    ### This state will fail if we have'nt joined the domain yet. Thats okay!
     - unmask_runtime: true
     - names:
       {% for service in samba.winbind.services %}
