@@ -1,5 +1,6 @@
 {% from "samba/map.jinja" import samba with context %}
 
+## Note: If pkg.installed fails try removing `libnss` and `libpam` first.
 samba_winbind_services:
   pkg.installed:
     - names:
