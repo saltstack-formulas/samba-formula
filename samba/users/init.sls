@@ -4,12 +4,13 @@ include:
 {% endif %}
 
 {% for login,user in salt['pillar.get']('samba:users', {}).items() %}
-{{ login }}:
+samba_{{ login }}:
   user.present:
+    - name: {{ login }}
     - fullname: {{ login }}
     - password: {{ user.password }}
 
-smbpasswd-{{ login }}:
+samba_smbpasswd_{{ login }}:
   cmd.run:
     - name: "(echo '{{ user.password }}'; echo '{{ user.password }}') | smbpasswd -as {{ login }}"
 {% endfor %}

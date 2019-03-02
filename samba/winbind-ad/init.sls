@@ -24,12 +24,10 @@ samba_winbind_pamforget_{{ pam_config }}:
       - file: samba_winbind_pam_mkhomedir
     - require_in:
       - cmd: samba_winbind_ad_authconfig
-
     {% endfor %}
 {% endif %}
 
   {% if grains.os_family in ('Debian', 'Suse',) %}
-
     {% for config in samba.winbind.nsswitch.regex %}
 
 samba_winbind_nsswitch_{{ config[0] }}:

@@ -51,9 +51,14 @@ Includes the ``winbind`` state.
 
 By default this state provides full Active Directory (AD) domain membership if ``samba.role`` equals ``ROLE_DOMAIN_MEMBER``.
 
+``samba.clean``
+--------------
+
+Calls `clean` state for all modules to completely remove samba and winbind.
+
 Configuration
 =============
-The distro supplied samba package includes a default ``smb.conf`` which is overridden by ``samba.config`` state. This formula has good defaults for samba ROLE_STANDALONE and ROLE_DOMAIN_MEMBER roles, but can be extended/overridden in pillars.
+The distro samba package includes a default ``smb.conf`` which is overridden by ``samba.config`` state. This formula has good defaults for samba ROLE_STANDALONE and ROLE_DOMAIN_MEMBER roles, but can be extended/overridden in pillars.
 
 
 AD integration

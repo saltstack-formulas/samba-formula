@@ -1,7 +1,7 @@
 {% from "samba/map.jinja" import samba with context %}
 
 include:
-  - samba
+  - samba.server
 
 samba_config:
   file.managed:
@@ -9,4 +9,4 @@ samba_config:
     - source: {{ samba.config_src }}
     - template: jinja
     - watch_in:
-      - service: samba
+      - service: samba_service_install
