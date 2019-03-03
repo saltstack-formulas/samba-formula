@@ -10,7 +10,7 @@ samba_winbind_services_clean:
     - enable: False
   file.absent:
     - name: {{ samba.winbind.pam_winbind.config }}
-  pkg.removed:
+  pkg.purged:
     - names:
       {% if samba.winbind.libnss %}
       - {{ samba.winbind.libnss }}
@@ -18,6 +18,7 @@ samba_winbind_services_clean:
       {% for pkg in samba.winbind.utils %}
       - {{ pkg }}
       {% endfor %}
+      - libwbclient0       ###needed (on ubuntu) to purge winbind (avoiding https://github.com/saltstack/salt/issues/42306)
       - {{ samba.winbind.server }}
     - require:
       - file: samba_winbind_services_clean
