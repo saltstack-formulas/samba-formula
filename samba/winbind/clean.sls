@@ -20,5 +20,6 @@ samba_winbind_services_clean:
       {% endfor %}
       - libwbclient0       ###needed (on ubuntu) to purge winbind (avoiding https://github.com/saltstack/salt/issues/42306)
       - {{ samba.winbind.server }}
+    - normalize: True
     - require:
       - file: samba_winbind_services_clean
