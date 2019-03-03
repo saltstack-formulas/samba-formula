@@ -11,8 +11,6 @@ samba_winbind_pam_mkhomedir:
     - source: {{ samba.winbind.pam_mkhomedir_src }}
     - template: jinja
     - create: True
-    - require:
-      - pkg: samba_winbind_services
     
     {% for pam_config in ['winbind', 'mkhomedir',] %}
 samba_winbind_pamforget_{{ pam_config }}:
@@ -36,27 +34,10 @@ samba_winbind_nsswitch_{{ config[0] }}:
     - pattern: {{ config[1] }}
     - repl: {{ config[2] }}
     - backup: '.salt.bak'
-    - require:
-      - pkg: samba_winbind_services
     - require_in:
       - cmd: samba_winbind_ad_authconfig
 
     {% endfor %}
-  {% endif %}
-
-  {% if grains.os_family in ('RedHat', 'Debian', 'Suse',) %}
-
-samba_winbind_ad_authconfig:
-  cmd.run:
-    - name: {{ samba.winbind.pam_authconfig }}
-    - onlyif: test -f {{ samba.winbind.pam_authconfig_cmd }}
-    - watch_in:
-      - service: samba_winbind_services
-
-  {% else %}
-
-     # todo: pam solution for other distros ...
-
   {% endif %}
 
   {% if samba.winbind.usermap %}
@@ -69,6 +50,13 @@ samba_winbind_ad_usermap:
     - template: jinja
     - context:
       workgroup: {{ samba.conf.sections.global.workgroup }}
-    - require:
-      - pkg: samba_winbind_services
   {% endif %}    
+
+  {% if grains.os_family in ('RedHat', 'Debian', 'Suse',) %}
+samba_winbind_ad_authconfig:
+  cmd.run:
+    - name: {{ samba.winbind.pam_authconfig }}
+    - onlyif: test -f {{ samba.winbind.pam_authconfig_cmd }}
+    - watch_in:
+      - service: samba_winbind_service
+  {% endif %}

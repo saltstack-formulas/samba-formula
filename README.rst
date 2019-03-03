@@ -42,7 +42,7 @@ Creates samba users (via ``smbpasswd``)  based on pillar data.
 
 Includes the ``samba`` state.
 
-Installs samba-winbind packages and updates NSS (nsswitch.conf).
+Installs samba-winbind packages and updates NSS (nsswitch.conf). Run this state after joining the Domain.
 
 ``samba.winbind-ad``
 ----------------
