@@ -1,18 +1,17 @@
 {% from "samba/map.jinja" import samba with context %}
 
-## Note: If pkg.installed fails run `samba.winbind.clean` (to delete `libnss` and `libpam`)
-samba_winbind_services:
+samba_winbind_service:
   pkg.installed:
     - names:
       - {{ samba.winbind.server }}
-      {% if samba.winbind.libnss %}
-      - {{ samba.winbind.libnss }}
-      {% endif %}
-      {% for pkg in samba.winbind.utils %}
+        {%- if "utils" in samba.winbind and samba.winbind.utils %}
+            {%- for pkg in samba.winbind.utils %}
       - {{ pkg }}
-      {% endfor %}
-    - require_in:
-      - file: samba_winbind_services
+            {%- endfor %}
+        {%- endif %}
+        {% if "libnss" in samba.winbind and samba.winbind.libnss %}
+      - {{ samba.winbind.libnss }}
+        {%- endif %}
   file.managed:
     - name: {{ samba.winbind.pam_winbind.config }}
     - source: {{ samba.winbind.pam_winbind.config_src }}
@@ -20,14 +19,13 @@ samba_winbind_services:
     - user: root
     - group: {{ samba.get('root_group', 'root') }}
     - mode: '0644'
-    - require_in:
-      - service: samba_winbind_services
+    - onlyif: test -f {{ samba.winbind.pam_winbind.config }}
   service.running:
     ### This state will fail if we have'nt joined the domain yet. Thats okay!
     - unmask_runtime: true
     - names:
-      {% for service in samba.winbind.services %}
-      -  {{ service }}
-      {% endfor %}
       - {{ samba.service }}
+        {% for service in samba.winbind.services %}
+      - {{ service }}
+        {% endfor %}
     - enable: True
