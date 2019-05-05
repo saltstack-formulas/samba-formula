@@ -53,7 +53,7 @@
    'default':{
       'server': 'samba-winbind',
       'services': ['nmb', 'winbind',],
-      'utils': ['attr', 'samba-winbind-clients', 'samba-winbind-krb5-locator', 'cifs-utils', 'oddjob-mkhomedir',],
+      'utils': ['attr', 'samba-winbind-clients', 'samba-winbind-krb5-locator', 'cifs-utils', 'oddjob-mkhomedir', 'sssd-libwbclient'],
       'libnss': 'samba-winbind-modules',
       'pam_authconfig': '/usr/sbin/authconfig --update --enablewinbind --enablewins --enablemkhomedir --enablewinbindauth',
       'pam_authconfig_cmd': '/usr/sbin/authconfig',
