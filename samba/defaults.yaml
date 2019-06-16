@@ -37,7 +37,6 @@ samba:
         ## samba.role: ROLE_DOMAIN_MEMBER
         realm: {{ default_realm }}
         security: ADS
-        allow trusted domains: no
         client signing: yes
         client use spnego: yes
         encrypt passwords: yes
