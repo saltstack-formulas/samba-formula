@@ -5,9 +5,10 @@ samba:
   role: ROLE_DOMAIN_MEMBER
   conf:
     render:
-      ## List the sections your smb.conf should include
+      ## list the sections your smb.conf should include
       section_order: ['global', 'homes', 'printers', 'sharename', 'user1share']
-      include_unordered_sections: yes
+      ## include sections from default.yaml (yes) or ONLY those listed above (no)
+      include_unordered_sections: no
 
     sections:
       global:
