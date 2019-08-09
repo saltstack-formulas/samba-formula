@@ -17,7 +17,7 @@ samba:
       #### Inherit these as smb.conf defaults.
       section_order: ['global', 'homes', 'printers', 'sharename',]
       include_skeleton: yes
-      include_unordered_sections: yes
+      include_unordered_sections: no    #best default value
     sections:
       global:
         ## samba.role: ROLE_STANDALONE (default)
@@ -52,7 +52,6 @@ samba:
         winbind enum groups: yes
         winbind expand groups: 0
         winbind use default domain: yes
-        winbind trusted domains only: no
         winbind refresh tickets: no
         winbind offline logon: no
         winbind cache time: 10
