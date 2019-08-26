@@ -16,7 +16,7 @@ Available states
 ``samba``
 ---------
 
-Installs the samba server package and service.
+Installs the samba server and client packages and starts the samba service.
 
 ``samba.client``
 ----------------
