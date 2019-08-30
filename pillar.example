@@ -38,8 +38,8 @@ samba:
         nt: EB11C288046508EBE2AA213DB0860813 ## Equals "user1sambapassword" in plaintext
     user2:
       password: 
-        passwd: $1$Kvm5/Q6Y$B19DYyLRCqeUsyacipVet1 #Equals "user2sambapassword" in Plaintext
-        nt: 5AA13065E0B8A81835D48291E5C47236 #Equals "user2sambapassword" in Plaintext
+        passwd: $1$Kvm5/Q6Y$B19DYyLRCqeUsyacipVet1 ## Equals "user2sambapassword" in Plaintext
+        nt: 5AA13065E0B8A81835D48291E5C47236 ## Equals "user2sambapassword" in Plaintext
 
   winbind:
     krb5_default_realm: EXAMPLE.COM
