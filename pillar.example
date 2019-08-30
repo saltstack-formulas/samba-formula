@@ -30,8 +30,8 @@ samba:
 
   users:
     ## Optional site specific extension to smb.conf
-    ## user.present passwd needs hash, generate it with the following command -> openssl passwd -1
-    ## pdbedit.managed nt needs hash, generate it with the following command -> salt '*' pdbedit.generate_nt_hash PASSWORD
+    ## user.present passwd needs plaintext or hash. Hash is recommended, generate it with the following command -> openssl passwd -1
+    ## pdbedit.managed nt needs hash. Plaintext seem to be broken (https://github.com/saltstack-formulas/samba-formula/issues/35). Generate it with the following command -> salt '*' pdbedit.generate_nt_hash PASSWORD
     user1:
       password:
         passwd: $1$vFH3.Plc$7CZnr18jaLx1fMBGm1NMP/ ## Equals "user1sambapassword" in plaintext
