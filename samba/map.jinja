@@ -8,7 +8,7 @@
         'service': 'smb',
     },
     'Debian': {
-        'client': 'samba-client',
+        'client': 'smbclient',
         'service': salt['grains.filter_by']({
             'lenny': 'samba',
             'squeeze': 'samba',
