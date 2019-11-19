@@ -3,6 +3,6 @@ include:
   - samba.server
   - samba.config
   - samba.client
-  - samba.users
+  # samba.users
   # samba.winbind
   # samba.winbind-ad
