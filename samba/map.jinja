@@ -36,6 +36,10 @@
          'service': 'samba_server',
          'config': '/usr/local/etc/smb4.conf',
      },
+     'Gentoo': {
+         'server': 'net-fs/samba',
+         'client': 'net-fs/samba',
+     },
      'MacOS': {},
  }, grain='os_family', merge=salt['grains.filter_by']({
      'Ubuntu': {
